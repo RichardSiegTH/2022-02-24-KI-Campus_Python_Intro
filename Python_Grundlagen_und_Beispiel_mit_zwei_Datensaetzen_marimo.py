@@ -22,9 +22,9 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Wie bereits angekündigt, wird in diesem Kurs Python über Jupyter Notebooks genutzt. Sie können innerhalb dieses Kurses auf die zum Kurs gehörenden Notebooks zugreifen ohne hierfür ein Software installieren zu müssen. Klicken Sie dazu einfach jeweils auf den Link des Notebooks, welches sie öffnen wollen. Dieses öffnet sich dann in einem anderen Browserfenster.
+    In diesem Kurs wird Python über [marimo](https://marimo.io) Notebooks genutzt – eine moderne, reaktive Alternative zu klassischen Jupyter Notebooks. Die vollständige Dokumentation finden Sie unter [docs.marimo.io](https://docs.marimo.io).
 
-    Schauen Sie sich erst einmal im Jupyter Notebook um. Sie können neue Zellen erstellen und den Typ der Zellen auswählen. Dabei können Sie zwischen Code und Markdown unterscheiden. Mit Markdown können Sie Text formatieren. Zum Beispiel können Sie ein Wort durch Umklammerung mit einem Sternchen *kursiv* schreiben. Mit zwei Sternchen wird der Text **fett**.
+    Schauen Sie sich erst einmal im marimo Notebook um. Es besteht aus Zellen, die entweder Python-Code oder Text enthalten können. Alle Zellen werden automatisch neu ausgeführt, wenn sich ihre Abhängigkeiten ändern – das macht marimo **reaktiv**. Mit Markdown können Sie Text formatieren. Zum Beispiel können Sie ein Wort durch Umklammerung mit einem Sternchen *kursiv* schreiben. Mit zwei Sternchen wird der Text **fett**.
     """)
     return
 
@@ -254,7 +254,7 @@ def _(mo):
     mo.md(r"""
     Bisher haben Sie nur die Kern-Sprachelement von Python genutzt. Python bringt aber eine reichhaltige Sammlung an Erweiterungen mit sich.
 
-    Hier nutzen Sie zum Beipsiel das Package `math`. Dieses laden Sie in das momentan genutzte Jupyter Notebook mit dem Keyword `import` und dem Namen des Packages.
+    Hier nutzen Sie zum Beipsiel das Package `math`. Dieses laden Sie in das momentan genutzte marimo Notebook mit dem Keyword `import` und dem Namen des Packages.
     """)
     return
 
@@ -379,6 +379,47 @@ def _(mo):
 def _(weather):
     fig = weather.plot.scatter(x="tmin", y="tmax")
     fig
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Mit der interaktiven Bibliothek [Plotly](https://plotly.com/python/) lässt sich das gleiche Streudiagramm noch interaktiver gestalten. Über das Werkzeug **Box Select** (Rechteck-Symbol in der Toolbar) oder **Lasso Select** können Sie einen Bereich im Diagramm auswählen. In marimo werden die ausgewählten Datenpunkte dank `mo.ui.plotly()` reaktiv als Tabelle angezeigt.
+    """)
+    return
+
+
+@app.cell
+def _():
+    import plotly.express as px
+
+    return (px,)
+
+
+@app.cell
+def _(mo, px, weather):
+    scatter_plotly = mo.ui.plotly(
+        px.scatter(
+            weather,
+            x="tmin",
+            y="tmax",
+            title="Min- vs. Maximaltemperatur (interaktiv)",
+            labels={"tmin": "Minimaltemperatur (°C)", "tmax": "Maximaltemperatur (°C)"},
+        )
+    )
+    return (scatter_plotly,)
+
+
+@app.cell
+def _(scatter_plotly):
+    scatter_plotly
+    return
+
+
+@app.cell
+def _(pd, scatter_plotly):
+    pd.DataFrame(scatter_plotly.value)
     return
 
 
